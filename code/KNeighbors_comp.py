@@ -8,8 +8,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from imp import reload
 import sys
 sys.path.append(r'E:\MyProgram\Python\ing\ing')
-import Xutils
-reload(Xutils)
+import utils
+reload(utils)
 
 
 files_path = r'E:\Research\Experiment\qianshan\features\train'
@@ -23,7 +23,7 @@ list_x_s=[]
 cnt=0
 
 #读取NaN值点信息
-del_list=Xutils.read_NaN(poi_path)
+del_list=utils.read_NaN(poi_path)
     
 for file_index in str_list:
     cnt+=1
@@ -76,4 +76,4 @@ z_p_frame = pd.DataFrame(data = np.empty((rows*cols,1)), columns = ['lables'])
 z_p_frame.loc[rest_frame.index] = np.array(z_ps).reshape(len(z_ps),1)
 
 #输出分类结果
-Xutils.output_lables_to_tif(z_p_frame,class_save_path,rows,cols)
+utils.output_lables_to_tif(z_p_frame,class_save_path,rows,cols)

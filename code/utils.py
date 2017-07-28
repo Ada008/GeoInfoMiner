@@ -1,10 +1,10 @@
 import csv
 import gdal
-import osr
 import numpy as np
 import pandas as pd
 
-def output_lables_to_tif(z_ps, class_file_path, rows, cols):
+# Convert lables predicted by classifier to GeoTiff file
+def output_lables_to_tif(z_ps, class_file_path, rows, cols, geo_trans_list, proj_str, num_bands):
     
     # Creates an empty Frame to store classification results
     z_p_frame = pd.DataFrame(data = np.empty((rows*cols,1)), columns = ['lables'])
@@ -12,6 +12,14 @@ def output_lables_to_tif(z_ps, class_file_path, rows, cols):
     # Fill the Frame with lables values
     z_p_frame.loc[np.arange(0, cols*rows, 1)] = np.array(z_ps).reshape(len(z_ps),1)
 
+    # Output data
+    output_frame_to_tif(z_p_frame, class_file_path, rows, cols, geo_trans_list, 
+                        proj_str, num_bands)
+
+
+# Output DataFrame as GeoTiff format
+def output_frame_to_tif(z_p_frame, class_file_path, rows, cols, geo_trans_list, 
+                        proj_str, num_bands):
 
     # Convert the result Frame to Matrix
     result_matrix = np.empty((rows,cols))
@@ -21,35 +29,48 @@ def output_lables_to_tif(z_ps, class_file_path, rows, cols):
     # Output result in "GeoTiff" format           
     driver=gdal.GetDriverByName("GTiff")
     driver.Register()
-    outDataset = driver.Create(class_file_path, cols, rows, 1, gdal.GDT_Float64)
+    outDataset = driver.Create(class_file_path, cols, rows, num_bands, gdal.GDT_Float64)
     
     # Define the projection coordinate system
-    outDataset.SetGeoTransform( [ 422985, 30, 0, 3439515, 0, -30 ] )
-    proj = osr.SpatialReference()
-    proj.ImportFromProj4("+proj=utm +zone=50 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-    outDataset.SetProjection( proj.ExportToWkt())
-    outDataset.GetRasterBand(1).WriteArray(result_matrix)
+    outDataset.SetGeoTransform(geo_trans_list)
+    outDataset.SetProjection(proj_str)
+    for i in range(0,num_bands):
+        outDataset.GetRasterBand(i+1).WriteArray(result_matrix[i,:,:])
     outDataset = None  
     print('Done')
-
-
-def prepare_data(imagery_path, train_file_path):
-    # read image
-    dataset = gdal.Open(imagery_path)
-    dsmatrix = dataset.ReadAsArray(xoff=0, yoff=0, xsize=dataset.RasterXSize, ysize=dataset.RasterYSize)
     
-    # read samples
+    
+# Read and preprocess data
+def prepare_data(imagery_path, train_file_path):
+    
+    # Read tiff image
+    image_tuple = read_image(imagery_path)
+    
+    # Read samples
     original_data_list = []
     csv_reader = csv.reader(open(train_file_path, encoding='utf-8'))
     for row in csv_reader:
         original_data_list.append(row)
     original_data_array = np.array(original_data_list)
     
-    # split training data into variables and lables 
+    # Split training data into variables and lables 
     x_s = original_data_array[:,2:8] 
     y_s = original_data_array[:,8]
     
-    # unfold array into pandas DataFrame
+    return x_s, y_s, image_tuple
+
+
+# Read image
+def read_image(imagery_path):
+    # Read image
+    dataset = gdal.Open(imagery_path)
+    dsmatrix = dataset.ReadAsArray(xoff=0, yoff=0, xsize=dataset.RasterXSize, ysize=dataset.RasterYSize)
+    
+    # Get Geographic meta data
+    geo_trans_list = dataset.GetGeoTransform()
+    proj_str = dataset.GetProjection()
+    num_bands = dataset.RasterCount
+    # Unfold array into pandas DataFrame
     rows = dsmatrix.shape[1]
     cols = dsmatrix.shape[2]
     data_array = dsmatrix[:,0,:]
@@ -58,7 +79,7 @@ def prepare_data(imagery_path, train_file_path):
         data_array = np.hstack((data_array,tempmatirx))
     data_frame = pd.DataFrame(data_array.T)
     
-    return x_s, y_s, rows, cols, data_frame
+    return rows, cols, data_frame, geo_trans_list, proj_str, num_bands
 
 
 def read_NaN(NaN_file_path):
