@@ -46,4 +46,4 @@ clf_KNeighbors.fit(x_s, y_s)
 z_ps=clf_KNeighbors.predict(data_frame)
 
 # Output the classification result
-utils.output_lables_to_tif(z_ps, class_file_path, rows, cols, geo_trans_list, proj_str)
+utils.output_lables_to_tif(z_ps, class_file_path, rows, cols, geo_trans_list, proj_str, num_bands)
