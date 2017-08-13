@@ -41,7 +41,7 @@ def output_frame_to_tif(z_p_frame, class_file_path, rows, cols, geo_trans_list,
     
     
 # Read and preprocess data
-def prepare_data(imagery_path, train_file_path):
+def prepare_data(imagery_path, train_file_path, split_points):
     
     # Read tiff image
     image_tuple = read_image(imagery_path)
@@ -54,8 +54,8 @@ def prepare_data(imagery_path, train_file_path):
     original_data_array = np.array(original_data_list)
     
     # Split training data into variables and lables 
-    x_s = original_data_array[:,2:8] 
-    y_s = original_data_array[:,8]
+    x_s = original_data_array[:,split_points[0]:split_points[1]] 
+    y_s = original_data_array[:,split_points[1]]
     
     return x_s, y_s, image_tuple
 
