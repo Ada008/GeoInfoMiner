@@ -32,7 +32,7 @@ split_points = [2, 7]
 
 # setup paths for all data files that will be used
 files_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification'
-class_file_path = files_path + "\\ImageData\\Unibagging_class.tif"
+class_file_path = files_path + "\\ImageData\\class_Unibagging.tif"
 vote_save_path = files_path + "\\OriginalVote.csv"
 
 # define a list to store results of all base classifiers
@@ -102,8 +102,5 @@ for pos_index in range(0,len(z_ps[0])):
                    
     final_list.append(lables[0][np.argmax(lables[1])])
 
-# convert List into Array
-label_array = np.array(final_list).reshape(len(final_list),1)
-
 # Output the classification result
-utils.output_lables_to_tif(label_array, class_file_path, rows, cols, geo_trans_list, proj_str, num_bands)
+utils.output_lables_to_tif(final_list, class_file_path, rows, cols, geo_trans_list, proj_str, 1)

@@ -51,4 +51,4 @@ z_ps=clf_KNeighbors.predict(data_tuple[4])
 
 # Output the classification result
 utils.output_lables_to_tif(z_ps, class_file_path, data_tuple[2], data_tuple[3], 
-                           data_tuple[5], data_tuple[6], data_tuple[7])
+                           data_tuple[5], data_tuple[6], 1)

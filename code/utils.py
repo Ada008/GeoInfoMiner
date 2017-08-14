@@ -22,9 +22,11 @@ def output_frame_to_tif(z_p_frame, class_file_path, rows, cols, geo_trans_list,
                         proj_str, num_bands):
 
     # Convert the result Frame to Matrix
-    result_matrix = np.empty((rows,cols))
-    for i in range(0,rows):
-        result_matrix[i,:] = z_p_frame.loc[i*cols:(i+1)*cols-1].T 
+    result_matrix = np.empty((num_bands, rows, cols))
+    for nb in range(0, num_bands):
+        for i in range(0,rows):
+            result_matrix[nb, i, :] = z_p_frame.loc[i*cols:(i+1)*cols-1].T 
+
     
     # Output result in "GeoTiff" format           
     driver=gdal.GetDriverByName("GTiff")
