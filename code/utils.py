@@ -81,7 +81,7 @@ def read_image(imagery_path):
         data_array = np.hstack((data_array,tempmatirx))
     data_frame = pd.DataFrame(data_array.T)
     
-    return rows, cols, data_frame, geo_trans_list, proj_str, num_bands
+    return data_frame, rows, cols, geo_trans_list, proj_str, num_bands
 
 
 def read_NaN(NaN_file_path):

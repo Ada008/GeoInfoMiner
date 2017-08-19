@@ -32,13 +32,13 @@ split_points = [2, 7]
 
 # setup paths for all data files that will be used
 files_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification'
-class_file_path = files_path + "\\ImageData\\class_Unibagging.tif"
+class_file_path = files_path + "\\ImageData\\class_unibagging.tif"
 vote_save_path = files_path + "\\OriginalVote.csv"
 
 # define a list to store results of all base classifiers
 z_ps=[]
 
-# # define a list to store weights of all base classifiers
+# define a list to store weights of all base classifiers
 w_ps=[]
 
 # process each band of data one by one for Memory saving
