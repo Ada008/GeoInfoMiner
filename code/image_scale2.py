@@ -36,7 +36,7 @@ for i in os.walk(str_input_path):
             str_tif_path = os.path.join(i[0], str_name)
     
             # Read original image
-            rows, cols, data_frame, geo_trans_list, proj_str, num_bands = utils.read_image(str_tif_path)
+            data_frame, rows, cols, geo_trans_list, proj_str, num_bands = utils.read_image(str_tif_path)
 
             # Data normalization
             scaled_matrix = sp.scale(data_frame)
