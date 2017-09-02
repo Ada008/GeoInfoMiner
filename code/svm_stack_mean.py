@@ -1,9 +1,6 @@
 #-*-coding:UTF-8-*-
 """
-SVM classifier on orginal bands.
-
-This file contains the basic implementation of the Support Vector Machine(SVM)
-algorithm on Landsat 8 Surface Reflectance data.
+SVM classifier on bands which are means of time stacked bands
 
 """
 # Authors: Jingge Xiao <jingge.xiao@gmail.com>

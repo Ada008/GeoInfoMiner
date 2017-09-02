@@ -15,6 +15,7 @@ All image must be scaled before subsequent classification progress
 import pandas as pd
 import sklearn.preprocessing as sp
 import sys
+import os
 
 #Set the path of source files
 sys.path.append(r'E:\Research\basic\github\GeoInfoMiner\code')
@@ -25,42 +26,28 @@ from imp import reload
 reload(utils)
 
 # Basic setup
-files_path = r"E:\Research\Experiment\qianshan\features\paras"
-basic_tif_name = "para_"
-basic_pos_name = "failedPos_"
-basic_nor_name = "nor_para_"
-str_list = ["Red","Blue","Green","NIR","SWIR1","SWIR2"]
+str_input_path = r"E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\ImageData\out\scale"
+str_output_path = r"E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\ImageData\out\scaled"
 
-# The author used 'for'loop in his experiment for convenience, but it is not 
-# essential. Users can modify that according to their own need.
-for file_index in str_list:
-    # Define temporary path names. Also, modification is needed before executing
-    tif_path = files_path + "\\" + basic_tif_name + file_index + ".tif"
-    poi_path = files_path + "\\" + basic_pos_name + file_index + ".csv"
-    tif_save_path = files_path + "\\" + basic_nor_name + file_index + ".tif"
+for i in os.walk(str_input_path):
+    for str_name in i[2]:
+        str_file_format = str_name[-3:]
+        if str_file_format == 'tif':
+            str_tif_path = os.path.join(i[0], str_name)
     
-    # Read original image
-    rows, cols, data_frame, geo_trans_list, proj_str, num_bands = utils.read_image(tif_path)
-    
-    # Read positions of NaN values. If your image do not contain NaN values, 
-    # this line of code should not be excuted.
-    del_list=utils.read_NaN(poi_path)
-    
-    # Drop out NaN values
-    rest_frame = data_frame.drop(del_list)
-    
-    # Data normalization
-    scaled_rest_matrix = sp.scale(rest_frame)
-    
-    # Put the scaled data into DataFrame which can leave out NaN values and 
-    # preserve scaled values without changing original data structure.
-    scaled_rest_frame = pd.DataFrame(scaled_rest_matrix, 
-                                     index = rest_frame.index, 
-                                     columns = ['a','b','c','d'])
-    scaled_full_frame = pd.DataFrame(index = data_frame.index, 
-                                     columns = data_frame.columns)
-    scaled_full_frame.loc[rest_frame.index] = scaled_rest_matrix
-    
-    # Output final result
-    utils.output_frame_to_tif(scaled_full_frame, tif_save_path, rows, cols, 
-                              geo_trans_list, proj_str, num_bands)
+            # Read original image
+            data_frame, rows, cols, geo_trans_list, proj_str, num_bands = utils.read_image(str_tif_path)
+
+            # Data normalization
+            scaled_matrix = sp.scale(data_frame)
+            
+            # Put the scaled data into DataFrame which can leave out NaN values and 
+            # preserve scaled values without changing original data structure.
+            scaled_frame = pd.DataFrame(scaled_matrix)
+            
+            # Set output file path
+            str_out_tif = os.path.join(str_output_path, str_name)
+            
+            # Output final result
+            utils.output_frame_to_tif(scaled_frame, str_out_tif, rows, cols, 
+                                      geo_trans_list, proj_str, num_bands)
