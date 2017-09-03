@@ -27,7 +27,7 @@ reload(utils)
 train_file_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\roi_and_csv_files\1_original_bands\Samples_cord.csv'
 
 # Set the path of image that is going to be classified
-imagery_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\ImageData\out\nor_L8_121.tif'
+imagery_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\ImageData\out\nor_pure.tif'
 
 # Set the path where to output the final classified image
 class_file_path = r'E:\Research\LandCoverMapping\Experiment\qianshan\Final_2\Classification\ImageData\out\class_svm_pure.tif'
