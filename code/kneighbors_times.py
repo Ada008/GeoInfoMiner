@@ -51,13 +51,13 @@ clf_knn = KNeighborsClassifier(n_neighbors = n_neighbors, weights='distance')
 t1 = time.time()
 clf_knn.fit(data_tuple[0], data_tuple[1])
 t2 = time.time()
-print("svm_fit_tri fitting time: " + str(t2 - t1))
+print("knn_fit_tri fitting time: " + str(t2 - t1))
 
 # Predict lables based on image data
 t3 = time.time()
 z_ps=clf_knn.predict(data_tuple[2][0])
 t4 = time.time()
-print("svm_fit_tri predicting time: " + str(t4 - t3))
+print("knn_fit_tri predicting time: " + str(t4 - t3))
 
 # Output the classification result
 utils.output_lables_to_tif(z_ps, class_file_path, data_tuple[2][1], data_tuple[2][2], 
